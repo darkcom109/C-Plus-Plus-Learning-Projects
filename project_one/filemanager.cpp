@@ -1,32 +1,21 @@
+#include "filemanager.h"
 #include <iostream>
-#include <string>
 #include <vector>
-
-// Listing files
 #include <filesystem>
-
-// File streams act as a pipe where data can flow
-// Input stream = data flows into your program
-// Output stream = data flows out of your program
-// cin = input stream from keyboard
-// cout = output stream to console
-// ifstream/ofstream/fstream = for files
-// ofstream = is the output file stream, used only for writing to files
+#include <string>
 #include <fstream>
-
-// To seperate a string into an array
 #include <sstream>
 
 using std::cout;
-using std::cin;
-using std::ofstream;
-using std::ifstream;
-using std::stringstream;
-using std::string;
-using std::ios;
 using std::vector;
+using std::string;
+using std::ifstream;
+using std::ofstream;
+using std::stringstream;
+using std::getline;
+using std::cin;
+using std::ios;
 
-// Shortcut/namespace
 namespace fs = std::filesystem;
 
 bool validFile(const string & filename){
@@ -110,43 +99,4 @@ void parseInput(const string & input) {
     }
 
     writer.close();
-}
-// File manager
-int main(){
-    // If the file does not exist, it is created
-    // If it does, it overwrites it by default
-    // Always check if it is_open() before using it
-
-    bool isOperational = true;
-
-    cout << "---------- FILE MANAGER ----------\n";
-    cout << "----------------------------------\n";
-    while(isOperational){
-        string input;
-        cout << "User$:";
-        getline(cin, input);
-        
-        if(input.empty()) continue;
-        else if(input == "exit"){
-            isOperational = false;
-            break;
-        }
-        else if(input == "-l"){
-            listFiles();
-            continue;
-        }
-        else if(input.substr(0, 4) == "echo"){
-            cout << input.substr(5) << "\n";
-            continue;
-        }
-
-        try{
-            parseInput(input);
-        }
-        catch(...){
-            cout << "Input was unsuccessful";
-        }
-    }
-    cout << "Exited Successfully";
-    return 0;
 }
