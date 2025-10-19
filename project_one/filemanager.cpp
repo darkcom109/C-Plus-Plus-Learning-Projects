@@ -48,13 +48,12 @@ void deleteFile(const string & filename){
     }
 }
 void listFiles(){ 
-    cout << "--------- CURRENT FILES ----------\n";
-    cout << "----------------------------------\n";
     // "for every file/folder inside the path, store it in entry"
     for(const auto &entry : fs::directory_iterator(".")){
         // Gets the path -> filename -> converts to a string
-            cout << entry.path().filename().string() << "\n";
+            cout << entry.path().filename().string() << " ";
     }
+    cout << "\n";
 }
 
 void readFile(const string & filename){
@@ -134,6 +133,10 @@ int main(){
         }
         else if(input == "-l"){
             listFiles();
+            continue;
+        }
+        else if(input.substr(0, 4) == "echo"){
+            cout << input.substr(5) << "\n";
             continue;
         }
 
