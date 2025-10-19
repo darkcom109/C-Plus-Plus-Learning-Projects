@@ -1,5 +1,9 @@
 #include <iostream>
 #include <string>
+#include <vector>
+
+// Listing files
+#include <filesystem>
 
 // File streams act as a pipe where data can flow
 // Input stream = data flows into your program
@@ -16,10 +20,55 @@
 using std::cout;
 using std::cin;
 using std::ofstream;
+using std::ifstream;
 using std::stringstream;
 using std::string;
 using std::ios;
+using std::vector;
 
+// Shortcut/namespace
+namespace fs = std::filesystem;
+
+bool validFile(const string & filename){
+    vector<string> restrictedFiles = {"filemanager.cpp", "filemanager.exe"};
+    for(int i = 0 ; i < restrictedFiles.size() ; i++) {
+        if(filename == restrictedFiles[i]) return false;
+    }
+    return true;
+}
+
+void deleteFile(const string & filename){
+    if(fs::exists(filename) && validFile(filename)){
+        
+        fs::remove(filename);
+        cout << "File: '" << filename << "' deleted successfully\n"; 
+    }
+    else{
+        cout << "File Deletion was not Successful\n";
+    }
+}
+void listFiles(){ 
+    cout << "--------- CURRENT FILES ----------\n";
+    cout << "----------------------------------\n";
+    // "for every file/folder inside the path, store it in entry"
+    for(const auto &entry : fs::directory_iterator(".")){
+        // Gets the path -> filename -> converts to a string
+            cout << entry.path().filename().string() << "\n";
+    }
+}
+
+void readFile(const string & filename){
+    ifstream reader;
+    reader.open(filename);
+    string line;
+    cout << "Contents$: ";
+
+    while(getline(reader, line)){
+        cout << line << " ";
+    }
+    cout << "\n";
+    reader.close();
+}
 // Three arguments in the string
 // {action} {filename} {input}
 void parseInput(const string & input) {
@@ -40,7 +89,14 @@ void parseInput(const string & input) {
     action = arr[0];
     filename = arr[1];
 
-    cout << "Input$ ";
+    if(action == "del") {
+        deleteFile(filename);
+        return;
+    }
+
+    readFile(filename);
+
+    cout << "Input$: ";
     getline(cin, content);
 
     // -o == overwrite
@@ -67,19 +123,18 @@ int main(){
     cout << "---------- FILE MANAGER ----------\n";
     cout << "----------------------------------\n";
     while(isOperational){
-
         string input;
         cout << "User$:";
         getline(cin, input);
-
-        if(input == "exit"){
+        
+        if(input.empty()) continue;
+        else if(input == "exit"){
             isOperational = false;
             break;
         }
-        else if(input == "help"){
-            cout << "---------------HELP---------------\n";
-            cout << "----------------------------------\n";
-            cout << "{filename}";
+        else if(input == "-l"){
+            listFiles();
+            continue;
         }
 
         try{
